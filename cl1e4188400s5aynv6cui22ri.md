@@ -1,5 +1,7 @@
 ## DDD With Symfony : How to configure Doctrine XML Mapping
 
+This article was originally published in French [here](https://devscast.tech/posts/ddd-avec-symfony-comment-configurer-mapping-xml-doctrine-26).
+
 [Doctrine](https://www.doctrine-project.org/) is an ORM for [PHP](https://php.net) that provides transparent persistence for PHP objects. It uses the [Data Mapper](https://martinfowler.com/eaaCatalog/dataMapper.html) pattern, which aims to completely separate your domain/business logic from persistence in a relational database management system.
 
 In a classic Symfony application the configuration of Doctrine Entities is done through annotations (or attributes with PHP +8.0).
