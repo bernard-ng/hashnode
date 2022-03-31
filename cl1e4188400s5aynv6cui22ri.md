@@ -55,7 +55,7 @@ An important precision for the purists, I am not comparing a DDD Entity to a Doc
 
 This said, using XML has the advantage of removing from your domain code all the Doctrine meta data and move them to a dedicated configuration which will be obviously in the infrastructure, if you use tools like [phpat](https://github.com/carlosas/phpat) to guarantee the respect of some architectural requirements this approach would be preferable.
 
-The designers of the doctrine have thought about this very particular use case and have developed other ways of mapping outside the annotations (or attributes), we can use [PHP](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/php-mapping.html), [YAML](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html) or XML, unfortunately the support of YAML and PHP will be removed from version 3.0 and it is recommended to use [XML](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html) which we will do right now.
+The designers of Doctrine have thought about this very particular use case and have developed other ways of mapping outside the annotations (or attributes), we can use [PHP](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/php-mapping.html), [YAML](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html) or XML, unfortunately the support of YAML and PHP will be removed from version 3.0 and it is recommended to use [XML](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html) which we will do right now.
 
 ## How to configure Doctrine Mapping with XML
 The example I gave before is valid in a classical Symfony application but here we are doing DDD and our architecture should look more like this 
@@ -127,7 +127,7 @@ There is no more annotations (or attributes) coming from doctrine in our domain,
 </doctrine-mapping>
 ```
 
-Notice that we specify the [FQCN](https://www.acronymfinder.com/Fully_Qualified-Class-Name-(Java)-(FQCN).html) of our entity and the associated repository (implementation) directly in the mapping, you can find more informations [here](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html).
+Notice that we specify the FQCN of our entity and the associated repository (implementation) directly in the mapping, you can find more informations [here](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html).
 
 We are almost there, there is one last step, we should now "tell" doctrine how to find our mapping and where to find it and this is done through the doctrine configuration located in `/config/packages/doctrine.yaml`
 
