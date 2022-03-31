@@ -6,14 +6,14 @@ This article was originally published in French [here](https://devscast.tech/pos
 
 In a classic Symfony application the configuration of Doctrine Entities is done through annotations (or attributes with PHP +8.0).
 
-in this article we will see
+In this article we will see
 
-- Why we should not use annotations (or attributres) when doing DDD
-- How to configure Doctrine Mapping with XML
+- Why it is preferable to use XML mapping when doing DDD
+- How to configure Doctrine XML mapping 
 
-## Why we should not use annotations (or attributres) when doing DDD
+## Why it is preferable to use XML mapping when doing DDD
 
-Let's start with a simple example, in a classical symfony application here is how an entity would look like 
+Let's start with a simple example, in a classical Symfony application here is how an entity would look like 
 
 ```php
 <?php
@@ -47,16 +47,18 @@ class User
 }
 ```
 
-of course let's not forget the accessors and mutators for each property since they are private, for the sake of concision I won't put it in my examples.
+Of course let's not forget the accessors and mutators for each property since they are private, for the sake of concision I won't put it in my examples.
 
-One thing we can notice very quickly by looking at our user class which obviously represents a user in our domain is somehow coupled to doctrine, this is problematic because the domain code should not depend in any way on another outside the domain, outside the domain layer, this is one of the principles of the hexagonal layer architecture also known as onion architecture.
+One thing we can notice very quickly by looking at our user class which obviously represents a user in the context of our domain has meta data from Doctrine, which can be annoying because the ideal would be to have the domain code unaware in some way of the infrastructure, remember that this is not an obligation in our case as **Matthias Noback** explains in [this article](https://matthiasnoback.nl/2020/05/ddd-and-your-database/), because it is only meta data and not a coupling so the entity remains testable in isolation and does not depend on Doctrine.
 
-In other words our entity user should not depend on any of our code outside the domain yet doctrine is a library i.e. a vendor, which should be in the infrastructure layer.
+An important precision for the purists, I am not comparing a DDD Entity to a Doctrine Entity, the two concepts are different, my goal here is to show how we can get rid of annotations (or attributes).
+
+This said, using XML has the advantage of removing from your domain code all the Doctrine meta data and move them to a dedicated configuration which will be obviously in the infrastructure, if you use tools like [phpat](https://github.com/carlosas/phpat) to guarantee the respect of some architectural requirements this approach would be preferable.
 
 The designers of the doctrine have thought about this very particular use case and have developed other ways of mapping outside the annotations (or attributes), we can use [PHP](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/php-mapping.html), [YAML](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html) or XML, unfortunately the support of YAML and PHP will be removed from version 3.0 and it is recommended to use [XML](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html) which we will do right now.
 
 ## How to configure Doctrine Mapping with XML
-The example I gave before is valid in a classical symfony application but here we are doing DDD and our architecture should look more like this 
+The example I gave before is valid in a classical Symfony application but here we are doing DDD and our architecture should look more like this 
 
 ```
 src/
@@ -78,7 +80,7 @@ src/
             └── ...
 ```
 
-Okay, there is a lot of information here, first notice that we have two times the `UserRepository`, the one that is in the domain is a simple interface and its implementation (concrete class) is in the infrastructure this to avoid depending again on doctrine in our domain.
+Okay, there is a lot of information here, first notice that we have two times the `UserRepository`, the one that is in the domain is a simple interface and its implementation (concrete class) is in the infrastructure this to avoid depending on doctrine in our Domain Repository.
 
 In order for your XML mapping to be taken into account by doctrine before configuring anything, the filename must match this pattern `[EntityName].orm.xml`, the file extension `.orm.xml` is important
 
@@ -125,9 +127,9 @@ There is no more annotations (or attributes) coming from doctrine in our domain,
 </doctrine-mapping>
 ```
 
-Notice that we specify the [FQCN](https://www.acronymfinder.com/Fully_Qualified-Class-Name-(Java)-(FQCN).html) of our entity and the associated repository (implementation) directly in the mapping, for more information : [the documentation](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html)
+Notice that we specify the [FQCN](https://www.acronymfinder.com/Fully_Qualified-Class-Name-(Java)-(FQCN).html) of our entity and the associated repository (implementation) directly in the mapping, you can find more informations [here](https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/xml-mapping.html).
 
-we are almost there, there is one last step, we should now "tell" doctrine how to find our mapping and where to find it and this is done through the doctrine configuration located in `/config/packages/doctrine.yaml`
+We are almost there, there is one last step, we should now "tell" doctrine how to find our mapping and where to find it and this is done through the doctrine configuration located in `/config/packages/doctrine.yaml`
 
 ```yaml
     orm:
@@ -143,4 +145,4 @@ we are almost there, there is one last step, we should now "tell" doctrine how t
 To test that everything works well, just type the following command : ```php bin/console doctrine:mapping:info```.
 
 ## Conclusion
-To finish, let's make a small recap, when doing DDD we will avoid by all possible means to couple our code with a code outside the domain layer, in the case of a symfony application for entities we use the XML configuration which has the advantage to stay in the infrastructure layer which makes our entity independent and unaware of the ORM used.
+To finish, let's make a small recap, when doing DDD in the case of a Symfony application for entities we use the XML configuration which has the advantage to stay in the infrastructure layer which makes our entity unaware of the ORM used and allows us to guarantee the respect of architectural requirements.
